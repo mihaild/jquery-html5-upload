@@ -54,7 +54,7 @@
 				}
 			}
 		}, options);
-		
+	
 		function upload() {
 			var files = this.files;
 			var total = files.length;
