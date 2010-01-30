@@ -7,51 +7,47 @@
 			'FINISHED':		'Завершено'
 		};
 		
+		var available_events = ['onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
 		var options = jQuery.extend({
-			events: {
-				onStart: function(event, total) {
-				},
-				onStartOne: function(event, name, number, total) {
-				},
-				onProgress: function(event, progress, name, number, total) {
-				},
-				onFinishOne: function(event, response, name, number, total) {
-				},
-				onFinish: function(event, total) {
-				},
-				onError: function(event, name, error) {
-				}
+			onStart: function(event, total) {
+			},
+			onStartOne: function(event, name, number, total) {
+			},
+			onProgress: function(event, progress, name, number, total) {
+			},
+			onFinishOne: function(event, response, name, number, total) {
+			},
+			onFinish: function(event, total) {
+			},
+			onError: function(event, name, error) {
 			},
 			autostart: true,
 			autoclear: true,
 			stopOnFirstError: false,
 
-			setInfo: {
-				name: function(text) {},
-				status: function(text) {}
-				progress: function(value) {},
+			setName: function(text) {},
+			setStatus: function(text) {},
+			setProgress: function(value) {},
+
+			genName: function(file, number, total) {
+				return file + "(" + (number+1) + " из " + total + ")";
 			},
-			genInfo: {
-				name: function(file, number, total) {
-					return file + "(" + (number+1) + " из " + total + ")";
-				},
-				status: function(progress, finished) {
-					if (finished) {
-						return STATUSES['FINISHED'];
-					}
-					if (progress == 0) {
-						return STATUSES['STARTED'];
-					}
-					else if (progress == 1) {
-						return STATUSES['LOADED'];
-					}
-					else {
-						return STATUSES['PROGRESS'];
-					}
-				},
-				progress: function(loaded, total) {
-					return loaded / total;
+			genStatus: function(progress, finished) {
+				if (finished) {
+					return STATUSES['FINISHED'];
 				}
+				if (progress == 0) {
+					return STATUSES['STARTED'];
+				}
+				else if (progress == 1) {
+					return STATUSES['LOADED'];
+				}
+				else {
+					return STATUSES['PROGRESS'];
+				}
+			},
+			genProgress: function(loaded, total) {
+				return loaded / total;
 			}
 		}, options);
 	
@@ -67,7 +63,7 @@
 			function upload_file(number) {
 				if (number == total) {
 					$this.trigger('html5_upload.onFinish', [total]);
-					options.setInfo.status(options.genInfo.status(1, true));
+					options.setStatus(options.genStatus(1, true));
 			        $this.attr("disabled", false);
 			        if (options.autoclear) {
 			        	$this.val("");
@@ -76,18 +72,18 @@
 				}
 				var file = files[number];
 				$this.trigger('html5_upload.onStartOne', [file.fileName, number, total]);
-				options.setInfo.status(options.genInfo.status(0));
-				options.setInfo.name(options.genInfo.name(file.fileName, number, total));
-				options.setInfo.progress(options.genInfo.progress(0, file.fileSize));
+				options.setStatus(options.genStatus(0));
+				options.setName(options.genName(file.fileName, number, total));
+				options.setProgress(options.genProgress(0, file.fileSize));
 		        xhr.upload['onprogress'] = function(rpe) {
 		        	$this.trigger('html5_upload.onProgress', [rpe.loaded / rpe.total, file.fileName, number, total]);
-		        	options.setInfo.status(options.genInfo.status(rpe.loaded / rpe.total));
-		        	options.setInfo.progress(options.genInfo.progress(rpe.loaded, rpe.total));
+		        	options.setStatus(options.genStatus(rpe.loaded / rpe.total));
+		        	options.setProgress(options.genProgress(rpe.loaded, rpe.total));
 		        };
 		        xhr.onload = function(load) {
 		        	$this.trigger('html5_upload.onFinishOne', [xhr.responseText, file.fileName, number, total]);
-		        	options.setInfo.status(options.genInfo.status(1, true));
-		        	options.setInfo.progress(options.genInfo.progress(file.fileSize, file.fileSize));
+		        	options.setStatus(options.genStatus(1, true));
+		        	options.setProgress(options.genProgress(file.fileSize, file.fileSize));
 			        upload_file(number+1);
 		        };
 		        xhr.onabort = function() {
@@ -127,8 +123,10 @@
 			if (options.autostart) {
 				$(this).bind('change', upload);
 			}
-			for (event in options.events) {
-				$(this).bind("html5_upload."+event, options.events[event]);
+			for (event in available_events) {
+				if (options[available_events[event]]) {
+					$(this).bind("html5_upload."+available_events[event], options[available_events[event]]);
+				}
 			}
 			$(this)
 				.bind('html5_upload.start', upload)

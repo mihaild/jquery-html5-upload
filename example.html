@@ -17,16 +17,14 @@
 			$(function() {
 				$("#upload_field").html5_upload({
 					url: '/',
-					setInfo: {
-						name: function(text) {
+					setName: function(text) {
 							$("#progress_report_name").text(text);
-						},
-						status: function(text) {
-							$("#progress_report_status").text(text);
-						},
-						progress: function(val) {
-							$("#progress_report_bar").css('width', Math.ceil(val*100)+"%");
-						}
+					},
+					setStatus: function(text) {
+						$("#progress_report_status").text(text);
+					},
+					setProgress: function(val) {
+						$("#progress_report_bar").css('width', Math.ceil(val*100)+"%");
 					}
 				});
 			});
