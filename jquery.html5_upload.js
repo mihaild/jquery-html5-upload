@@ -27,11 +27,14 @@
 			stopOnFirstError: false,
 
 			setInfo: {
-				progress: function(value) {},
 				name: function(text) {},
 				status: function(text) {}
+				progress: function(value) {},
 			},
 			genInfo: {
+				name: function(file, number, total) {
+					return file + "(" + (number+1) + " из " + total + ")";
+				},
 				status: function(progress, finished) {
 					if (finished) {
 						return STATUSES['FINISHED'];
@@ -45,9 +48,6 @@
 					else {
 						return STATUSES['PROGRESS'];
 					}
-				},
-				name: function(file, number, total) {
-					return file + "(" + (number+1) + " из " + total + ")";
 				},
 				progress: function(loaded, total) {
 					return loaded / total;
@@ -146,4 +146,3 @@
 		});
 	};
 })(jQuery);
- 
