@@ -19,7 +19,7 @@
 			autoclear: true,
 			stopOnFirstError: false,
 
-			STATUSES = {
+			STATUSES: {
 				'STARTED':		'Запуск',
 				'PROGRESS':		'Загрузка',
 				'LOADED':		'Обработка',
