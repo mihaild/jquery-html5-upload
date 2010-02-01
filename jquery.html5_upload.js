@@ -1,11 +1,5 @@
 (function($) {
 	jQuery.fn.html5_upload = function(options) {
-		var STATUSES = {
-			'STARTED':		'Запуск',
-			'PROGRESS':		'Загрузка',
-			'LOADED':		'Обработка',
-			'FINISHED':		'Завершено'
-		};
 		
 		var available_events = ['onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
 		var options = jQuery.extend({
@@ -25,6 +19,13 @@
 			autoclear: true,
 			stopOnFirstError: false,
 
+			STATUSES = {
+				'STARTED':		'Запуск',
+				'PROGRESS':		'Загрузка',
+				'LOADED':		'Обработка',
+				'FINISHED':		'Завершено'
+			},
+
 			setName: function(text) {},
 			setStatus: function(text) {},
 			setProgress: function(value) {},
@@ -34,16 +35,16 @@
 			},
 			genStatus: function(progress, finished) {
 				if (finished) {
-					return STATUSES['FINISHED'];
+					return options.STATUSES['FINISHED'];
 				}
 				if (progress == 0) {
-					return STATUSES['STARTED'];
+					return options.STATUSES['STARTED'];
 				}
 				else if (progress == 1) {
-					return STATUSES['LOADED'];
+					return options.STATUSES['LOADED'];
 				}
 				else {
-					return STATUSES['PROGRESS'];
+					return options.STATUSES['PROGRESS'];
 				}
 			},
 			genProgress: function(loaded, total) {
@@ -56,7 +57,7 @@
 			var total = files.length;
 			var $this = $(this);
 			this.disabled = true;
-			$this.trigger('html5_upload.onStart', total);
+			$this.trigger('html5_upload.onStart', [total]);
 			var uploaded = 0;
 			var xhr = this.html5_upload['xhr'];
 			this.html5_upload['continue_after_abort'] = true;
@@ -138,8 +139,10 @@
 					this.html5_upload['xhr'].abort();
 				})
 				.bind('html5_upload.destroy', function() {
+					this.html5_upload['continue_after_abort'] = false;
+					this.xhr.abort();
 					delete this.html5_upload;
-					$(this).unbind('html5_upload.*');
+					$(this).unbind('html5_upload.*').unbind('change', upload);
 				});
 		});
 	};
