@@ -1,6 +1,6 @@
 (function($) {
 	jQuery.fn.html5_upload = function(options) {
-		
+
 		var available_events = ['onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
 		var options = jQuery.extend({
 			onStart: function(event, total) {
@@ -51,7 +51,7 @@
 				return loaded / total;
 			}
 		}, options);
-	
+
 		function upload() {
 			var files = this.files;
 			var total = files.length;
@@ -65,52 +65,52 @@
 				if (number == total) {
 					$this.trigger('html5_upload.onFinish', [total]);
 					options.setStatus(options.genStatus(1, true));
-			        $this.attr("disabled", false);
-			        if (options.autoclear) {
-			        	$this.val("");
-			        }
-			        return;
+					$this.attr("disabled", false);
+					if (options.autoclear) {
+						$this.val("");
+					}
+					return;
 				}
 				var file = files[number];
 				$this.trigger('html5_upload.onStartOne', [file.fileName, number, total]);
 				options.setStatus(options.genStatus(0));
 				options.setName(options.genName(file.fileName, number, total));
 				options.setProgress(options.genProgress(0, file.fileSize));
-		        xhr.upload['onprogress'] = function(rpe) {
-		        	$this.trigger('html5_upload.onProgress', [rpe.loaded / rpe.total, file.fileName, number, total]);
-		        	options.setStatus(options.genStatus(rpe.loaded / rpe.total));
-		        	options.setProgress(options.genProgress(rpe.loaded, rpe.total));
-		        };
-		        xhr.onload = function(load) {
-		        	$this.trigger('html5_upload.onFinishOne', [xhr.responseText, file.fileName, number, total]);
-		        	options.setStatus(options.genStatus(1, true));
-		        	options.setProgress(options.genProgress(file.fileSize, file.fileSize));
-			        upload_file(number+1);
-		        };
-		        xhr.onabort = function() {
-		        	if ($this[0].html5_upload['continue_after_abort']) {
-		        		upload_file(number+1);
-		        	}
-		        	else {
-		        		$this.attr("disabled", false);
-		        		if (options.autoclear) {
-				        	$this.val("");
-				        }
-		        	}
-		        };
-		        xhr.onerror = function(e) {
-		        	$this.trigger('html5_upload.onError', [file.fileName, e]);
-		        	if (!options.stopOnFirstError) {
-		        		upload_file(number+1);
-		        	}
-		        };
-		        xhr.open("post", options.url, true);
-		        xhr.setRequestHeader("Cache-Control", "no-cache");
-		        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		        xhr.setRequestHeader("X-File-Name", file.fileName);
-		        xhr.setRequestHeader("X-File-Size", file.fileSize);
-		        xhr.setRequestHeader("Content-Type", "multipart/form-data");
-		        xhr.send(file);
+				xhr.upload['onprogress'] = function(rpe) {
+					$this.trigger('html5_upload.onProgress', [rpe.loaded / rpe.total, file.fileName, number, total]);
+					options.setStatus(options.genStatus(rpe.loaded / rpe.total));
+					options.setProgress(options.genProgress(rpe.loaded, rpe.total));
+				};
+				xhr.onload = function(load) {
+					$this.trigger('html5_upload.onFinishOne', [xhr.responseText, file.fileName, number, total]);
+					options.setStatus(options.genStatus(1, true));
+					options.setProgress(options.genProgress(file.fileSize, file.fileSize));
+					upload_file(number+1);
+				};
+				xhr.onabort = function() {
+					if ($this[0].html5_upload['continue_after_abort']) {
+						upload_file(number+1);
+					}
+					else {
+						$this.attr("disabled", false);
+						if (options.autoclear) {
+							$this.val("");
+						}
+					}
+				};
+				xhr.onerror = function(e) {
+					$this.trigger('html5_upload.onError', [file.fileName, e]);
+					if (!options.stopOnFirstError) {
+						upload_file(number+1);
+					}
+				};
+				xhr.open("post", options.url, true);
+				xhr.setRequestHeader("Cache-Control", "no-cache");
+				xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+				xhr.setRequestHeader("X-File-Name", file.fileName);
+				xhr.setRequestHeader("X-File-Size", file.fileSize);
+				xhr.setRequestHeader("Content-Type", "multipart/form-data");
+				xhr.send(file);
 			}
 			upload_file(0);
 			return true;
