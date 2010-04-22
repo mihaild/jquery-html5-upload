@@ -4,8 +4,10 @@
 		var available_events = ['onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
 		var options = jQuery.extend({
 			onStart: function(event, total) {
+				return true;
 			},
 			onStartOne: function(event, name, number, total) {
+				return true;
 			},
 			onProgress: function(event, progress, name, number, total) {
 			},
@@ -56,8 +58,10 @@
 			var files = this.files;
 			var total = files.length;
 			var $this = $(this);
+			if (!$this.triggerHandler('html5_upload.onStart', [total])) {
+				return false;
+			}
 			this.disabled = true;
-			$this.trigger('html5_upload.onStart', [total]);
 			var uploaded = 0;
 			var xhr = this.html5_upload['xhr'];
 			this.html5_upload['continue_after_abort'] = true;
@@ -72,7 +76,9 @@
 					return;
 				}
 				var file = files[number];
-				$this.trigger('html5_upload.onStartOne', [file.fileName, number, total]);
+				if (!$this.triggerHandler('html5_upload.onStartOne', [file.fileName, number, total])) {
+					return upload_file(number+1);
+				}
 				options.setStatus(options.genStatus(0));
 				options.setName(options.genName(file.fileName, number, total));
 				options.setProgress(options.genProgress(0, file.fileSize));

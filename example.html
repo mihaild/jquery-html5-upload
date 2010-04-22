@@ -18,6 +18,9 @@
 			$(function() {
 				$("#upload_field").html5_upload({
 					url: '/',
+					onStart: function(event, total) {
+						return confirm("You are trying to upload " + total + " files. Are you sure?");
+					},
 					setName: function(text) {
 							$("#progress_report_name").text(text);
 					},
