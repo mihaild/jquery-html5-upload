@@ -17,7 +17,9 @@
 		<script type="text/javascript">
 			$(function() {
 				$("#upload_field").html5_upload({
-					url: '/',
+					url: function() {
+						return prompt("Url", "/");
+					},
 					onStart: function(event, total) {
 						return confirm("You are trying to upload " + total + " files. Are you sure?");
 					},
