@@ -20,6 +20,7 @@
 			autostart: true,
 			autoclear: true,
 			stopOnFirstError: false,
+			sendBoundary: false,
 
 			STATUSES: {
 				'STARTED':		'Запуск',
@@ -115,8 +116,47 @@
 				xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 				xhr.setRequestHeader("X-File-Name", file.fileName);
 				xhr.setRequestHeader("X-File-Size", file.fileSize);
-				xhr.setRequestHeader("Content-Type", "multipart/form-data");
-				xhr.send(file);
+				if (options.sendBoundary) {//Thanks to jm.schelcher
+					var boundary = '------multipartformboundary' + (new Date).getTime();
+					var dashdash = '--';
+					var crlf     = '\r\n';
+
+					/* Build RFC2388 string. */
+					var builder = '';
+
+					builder += dashdash;
+					builder += boundary;
+					builder += crlf;
+
+					builder += 'Content-Disposition: form-data; name="user_file[]"';
+					builder += '; filename="' + file.fileName + '"';
+					builder += crlf;
+
+					builder += 'Content-Type: application/octet-stream';
+					builder += crlf;
+					builder += crlf;
+
+					/* Append binary data. */
+					builder += file.getAsBinary();
+					builder += crlf;
+
+					/* Write boundary. */
+					builder += dashdash;
+					builder += boundary;
+					builder += crlf;
+
+					builder += dashdash;
+					builder += boundary;
+					builder += dashdash;
+					builder += crlf;
+
+					xhr.setRequestHeader('content-type', 'multipart/form-data; boundary=' + boundary);
+					xhr.sendAsBinary(builder);
+				}
+				else {
+					xhr.setRequestHeader("Content-Type", "multipart/form-data");
+					xhr.send(file);
+				}
 			}
 			upload_file(0);
 			return true;
