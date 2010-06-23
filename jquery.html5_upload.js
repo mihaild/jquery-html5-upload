@@ -24,6 +24,7 @@
 			autoclear: true,
 			stopOnFirstError: false,
 			sendBoundary: false,
+			fieldName: 'user_file[]',//ignore if sendBoundary is false
 
 			STATUSES: {
 				'STARTED':		'Запуск',
@@ -127,7 +128,7 @@
 
 				if (window.FormData) {//Many thanks to scottt.tw
 					var f = new FormData();
-					f.append('user_file[]', file);
+					f.append(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName, file);
 					xhr.send(f);
 				}
 				else if (file.getAsBinary) {//Thanks to jm.schelcher
@@ -142,7 +143,7 @@
 					builder += boundary;
 					builder += crlf;
 
-					builder += 'Content-Disposition: form-data; name="user_file[]"';
+					builder += 'Content-Disposition: form-data; name="'+(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName)+'"';
 					builder += '; filename="' + file.fileName + '"';
 					builder += crlf;
 
