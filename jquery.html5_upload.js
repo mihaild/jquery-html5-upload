@@ -17,6 +17,9 @@
 			},
 			onError: function(event, name, error) {
 			},
+			onBrowserIncompatible: function() {
+				alert("Sorry, but your browser is incompatible with uploading files using HTML5 (at least, with current preferences.\n Please install the latest version of Firefox, Safari or Chrome");
+			},
 			autostart: true,
 			autoclear: true,
 			stopOnFirstError: false,
@@ -116,7 +119,18 @@
 				xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 				xhr.setRequestHeader("X-File-Name", file.fileName);
 				xhr.setRequestHeader("X-File-Size", file.fileSize);
-				if (options.sendBoundary) {//Thanks to jm.schelcher
+
+				if (!options.sendBoundary) {
+					xhr.setRequestHeader("Content-Type", "multipart/form-data");
+					xhr.send(file);
+				}
+
+				if (window.FormData) {//Many thanks to scottt.tw
+					var f = new FormData();
+					f.append('user_file[]', file);
+					xhr.send(f);
+				}
+				else if (file.getAsBinary) {//Thanks to jm.schelcher
 					var boundary = '------multipartformboundary' + (new Date).getTime();
 					var dashdash = '--';
 					var crlf     = '\r\n';
@@ -154,8 +168,7 @@
 					xhr.sendAsBinary(builder);
 				}
 				else {
-					xhr.setRequestHeader("Content-Type", "multipart/form-data");
-					xhr.send(file);
+					options.onBrowserIncompatible();
 				}
 			}
 			upload_file(0);
