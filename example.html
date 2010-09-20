@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-		<script src="http://jquery-html5-upload.googlecode.com/svn/trunk/jquery.html5_upload.js" type="text/javascript"></script>
+		<script src="jquery.html5_upload.js" type="text/javascript"></script>
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 	</head>
 	<body>
@@ -17,8 +17,8 @@
 		<script type="text/javascript">
 			$(function() {
 				$("#upload_field").html5_upload({
-					url: function() {
-						return prompt("Url", "/");
+					url: function(number) {
+						return prompt(number + " url", "/");
 					},
 					sendBoundary: window.FormData || $.browser.mozilla,
 					onStart: function(event, total) {
