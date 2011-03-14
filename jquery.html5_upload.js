@@ -145,7 +145,11 @@
 						builder += crlf;
 
 						builder += 'Content-Disposition: form-data; name="'+(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName)+'"';
-						builder += '; filename="' + file.fileName + '"';
+
+						//thanks to oyejo...@gmail.com for this fix
+						fileName = unescape(encodeURIComponent(file.fileName)); //encode_utf8
+
+						builder += '; filename="' + fileName + '"';
 						builder += crlf;
 
 						builder += 'Content-Type: application/octet-stream';
