@@ -33,6 +33,17 @@
 				'LOADED':		'Обработка',
 				'FINISHED':		'Завершено'
 			},
+			headers: {
+				"Cache-Control":"no-cache",
+				"X-Requested-With":"XMLHttpRequest",
+				"X-File-Name": function(file){return file.fileName},
+				"X-File-Size": function(file){return file.fileSize},
+				"Content-Type": function(file){
+					if (!options.sendBoundary) return 'multipart/form-data';
+					return false;
+				}
+			},
+
 
 			setName: function(text) {},
 			setStatus: function(text) {},
@@ -117,13 +128,13 @@
 					}
 				};
 				xhr.open(options.method, typeof(options.url) == "function" ? options.url(number) : options.url, true);
-				xhr.setRequestHeader("Cache-Control", "no-cache");
-				xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-				xhr.setRequestHeader("X-File-Name", file.fileName);
-				xhr.setRequestHeader("X-File-Size", file.fileSize);
+				$.each(options.headers,function(key,val){
+					val = typeof(val) == "function" ? val(file) : val; // resolve value
+					if (val === false) return true; // if resolved value is boolean false, do not send this header
+					xhr.setRequestHeader(key, val);
+				});
 
 				if (!options.sendBoundary) {
-					xhr.setRequestHeader("Content-Type", "multipart/form-data");
 					xhr.send(file);
 				}
 				else {
