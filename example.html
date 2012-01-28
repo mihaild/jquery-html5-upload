@@ -25,6 +25,9 @@
                         return true;
                         return confirm("You are trying to upload " + total + " files. Are you sure?");
                     },
+                    onProgress: function(event, progress, name, number, total) {
+                        console.log(progress, number);
+                    },
                     setName: function(text) {
                         $("#progress_report_name").text(text);
                     },

@@ -33,10 +33,10 @@
             method: 'post',
 
             STATUSES: {
-                'STARTED':        'Запуск',
-                'PROGRESS':        'Загрузка',
-                'LOADED':        'Обработка',
-                'FINISHED':        'Завершено'
+                'STARTED'   : 'Started',
+                'PROGRESS'  : 'Progress',
+                'LOADED'    : 'Loaded',
+                'FINISHED'  : 'Finished'
             },
             headers: {
                 "Cache-Control":"no-cache",
