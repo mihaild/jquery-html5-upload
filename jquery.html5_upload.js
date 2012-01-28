@@ -110,10 +110,18 @@
                     options.setProgress(options.genProgress(rpe.loaded, rpe.total));
                 };
                 xhr.onload = function(load) {
-                    $this.triggerHandler('html5_upload.onFinishOne', [xhr.responseText, get_file_name(file), number, total]);
-                    options.setStatus(options.genStatus(1, true));
-                    options.setProgress(options.genProgress(get_file_size(file), get_file_size(file)));
-                    upload_file(number+1);
+                    if (xhr.status != 200) {
+                        $this.triggerHandler('html5_upload.onError', [get_file_name(file), load]);
+                        if (!options.stopOnFirstError) {
+                            upload_file(number+1);
+                        }
+                    }
+                    else {
+                        $this.triggerHandler('html5_upload.onFinishOne', [xhr.responseText, get_file_name(file), number, total]);
+                        options.setStatus(options.genStatus(1, true));
+                        options.setProgress(options.genProgress(get_file_size(file), get_file_size(file)));
+                        upload_file(number+1);
+                    }
                 };
                 xhr.onabort = function() {
                     if ($this[0].html5_upload['continue_after_abort']) {

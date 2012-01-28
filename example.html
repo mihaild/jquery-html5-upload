@@ -36,6 +36,9 @@
                     },
                     onFinishOne: function(event, response, name, number, total) {
                         //alert(response);
+                    },
+                    onError: function(event, name, error) {
+                        alert('error while uploading file ' + name);
                     }
                 });
             });
