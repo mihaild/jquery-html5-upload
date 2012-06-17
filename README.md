@@ -95,3 +95,6 @@ This functions get plain text from **set*** functions
 **sendBoundary** (bool) format headers to emulate usual form file sending.
 
 **fieldName** (string|function) if setBoundary is true, value for file field name
+
+**extraFields** (map|function) extra fields to send with file upload
+request (works only for HTML5)
