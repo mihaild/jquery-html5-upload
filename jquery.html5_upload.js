@@ -30,7 +30,7 @@
             stopOnFirstError: false,
             sendBoundary: false,
             fieldName: 'user_file[]',//ignore if sendBoundary is false
-			extraFields: {}, // extra fields to send with file upload request (HTML5 only)
+            extraFields: {}, // extra fields to send with file upload request (HTML5 only)
             method: 'post',
 
             STATUSES: {
@@ -156,9 +156,9 @@
                     if (window.FormData) {//Many thanks to scottt.tw
                         var f = new FormData();
                         f.append(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName, file);
-						$.each(options.extraFields, function(key, val){
-						  f.append(key, val);
-						});
+                        $.each(options.extraFields, function(key, val){
+                            f.append(key, val);
+                        });
                         xhr.send(f);
                     }
                     else if (file.getAsBinary) {//Thanks to jm.schelcher
