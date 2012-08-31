@@ -181,7 +181,7 @@
                         builder += '; filename="' + fileName + '"';
                         builder += crlf;
 
-                        builder += 'Content-Type: application/octet-stream';
+                        builder += 'Content-Type: ' + file.type;
                         builder += crlf;
                         builder += crlf;
 
