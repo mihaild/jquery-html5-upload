@@ -80,7 +80,6 @@
         }, options);
 
         function upload( files ) {
-            console.log( files );
             var total = files.length;
             var $this = $(this);
             if (!$this.triggerHandler('html5_upload.onStart', [total])) {
