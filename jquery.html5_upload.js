@@ -1,5 +1,6 @@
 (function($) {
-    jQuery.fn.html5_upload = function(options) {
+    $.fn.html5_upload = function(options) {
+
         function get_file_name(file) {
             return file.name || file.fileName;
         }
@@ -7,7 +8,7 @@
             return file.size || file.fileSize;
         }
         var available_events = ['onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
-        var options = jQuery.extend({
+        var options = $.extend({
             onStart: function(event, total) {
                 return true;
             },
@@ -78,8 +79,8 @@
             }
         }, options);
 
-        function upload() {
-            var files = this.files;
+        function upload( files ) {
+            console.log( files );
             var total = files.length;
             var $this = $(this);
             if (!$this.triggerHandler('html5_upload.onStart', [total])) {
@@ -209,12 +210,15 @@
 
         try {
             return this.each(function() {
+                var file_input = this;
                 this.html5_upload = {
                     xhr:                    new XMLHttpRequest(),
                     continue_after_abort:    true
                 };
                 if (options.autostart) {
-                    $(this).bind('change', upload);
+                    $(this).bind('change', function(e){
+                        upload.call( e.target, this.files );
+                    });
                 }
                 for (event in available_events) {
                     if (options[available_events[event]]) {
@@ -222,6 +226,11 @@
                     }
                 }
                 $(this)
+                    .bind('html5_upload.startFromDrop', function( e, dropEvent ){
+                        if ( dropEvent.dataTransfer && dropEvent.dataTransfer.files.length ){
+                            upload.call( file_input, dropEvent.dataTransfer.files );    
+                        }
+                    })
                     .bind('html5_upload.start', upload)
                     .bind('html5_upload.cancelOne', function() {
                         this.html5_upload['xhr'].abort();
