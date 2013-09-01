@@ -216,7 +216,7 @@
                 if (options.autostart) {
                     $(this).bind('change', upload);
                 }
-                for (event in available_events) {
+                for (var event in available_events) {
                     if (options[available_events[event]]) {
                         $(this).bind("html5_upload."+available_events[event], options[available_events[event]]);
                     }
