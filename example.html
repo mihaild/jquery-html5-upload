@@ -4,9 +4,17 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
         <script src="jquery.html5_upload.js" type="text/javascript"></script>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+
+        <style>
+            #drop_area.file_hover {
+                background:red;
+            }
+
+        </style>
     </head>
     <body>
         <input type="file" multiple="multiple" id="upload_field" />
+        <div id="drop_area" style="margin:20px 0; width:300px; padding:20px; border:1px dashed black;">or drop file(s) here</div>
         <div id="progress_report">
             <div id="progress_report_name"></div>
             <div id="progress_report_status" style="font-style: italic;"></div>
@@ -16,7 +24,7 @@
         </div>
         <script type="text/javascript">
             $(function() {
-                $("#upload_field").html5_upload({
+                var $input = $("#upload_field").html5_upload({
                     url: function(number) {
                         return prompt(number + " url", "/");
                     },
@@ -44,6 +52,28 @@
                         alert('error while uploading file ' + name);
                     }
                 });
+
+
+
+                // Example of how to use this with a html5 drop event
+                
+                // this is absolutely necessary -- see http://weblog.bocoup.com/using-datatransfer-with-jquery-events/
+                $.event.props.push('dataTransfer');
+
+                var $drop = $('#drop_area');
+                $drop.on( 'dragover dragenter', function(e){ 
+                    $drop.addClass('file_hover'); 
+                    return false;
+                }).on( 'dragleave dragexit', function(e){ 
+                    $drop.removeClass('file_hover');
+                    return false;
+                }).on( 'drop', function(e){            
+                    if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
+                        $input.trigger('html5_upload.startFromDrop', e );
+                    }
+                    return false;
+                })
+
             });
         </script>
     </body>
