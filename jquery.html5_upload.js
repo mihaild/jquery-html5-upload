@@ -43,7 +43,7 @@
             headers: {
                 "Cache-Control":"no-cache",
                 "X-Requested-With":"XMLHttpRequest",
-                "X-File-Name": function(file){return get_file_name(file)},
+                "X-File-Name": function(file){return encodeURIComponent(get_file_name(file))},
                 "X-File-Size": function(file){return get_file_size(file)},
                 "X-CSRF-Token": $('meta[name="csrf-token"]').attr("content"),
                 "Content-Type": function(file){
