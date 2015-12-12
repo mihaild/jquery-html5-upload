@@ -112,7 +112,7 @@
                     options.setProgress(options.genProgress(rpe.loaded, rpe.total));
                 };
                 xhr.onload = function(load) {
-                    if (xhr.status != 200) {
+                    if (xhr.status >= 200 || xhr.status < 205) {
                         $this.triggerHandler('html5_upload.onError', [get_file_name(file), load]);
                         if (!options.stopOnFirstError) {
                             upload_file(number+1);
