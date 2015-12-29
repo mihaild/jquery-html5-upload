@@ -112,7 +112,7 @@
                     options.setProgress(options.genProgress(rpe.loaded, rpe.total));
                 };
                 xhr.onload = function(load) {
-                    if (xhr.status >= 200 || xhr.status < 205) {
+                    if (xhr.status >= 205 || xhr.status < 200) {
                         $this.triggerHandler('html5_upload.onError', [get_file_name(file), load]);
                         if (!options.stopOnFirstError) {
                             upload_file(number+1);
@@ -229,7 +229,7 @@
                 $(this)
                     .bind('html5_upload.startFromDrop', function( e, dropEvent ){
                         if ( dropEvent.dataTransfer && dropEvent.dataTransfer.files.length ){
-                            upload.call( file_input, dropEvent.dataTransfer.files );    
+                            upload.call( file_input, dropEvent.dataTransfer.files );
                         }
                     })
                     .bind('html5_upload.start', upload)
