@@ -156,8 +156,8 @@
                     if (window.FormData) {//Many thanks to scottt.tw
                         var f = new FormData();
                         f.append(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName, file);
-                        options.extraFields = typeof(options.extraFields) == "function" ? options.extraFields() : options.extraFields;
-                        $.each(options.extraFields, function(key, val){
+                        var extraFields = typeof(options.extraFields) == "function" ? options.extraFields() : options.extraFields;
+                        $.each(extraFields, function(key, val){
                             f.append(key, val);
                         });
                         xhr.send(f);
